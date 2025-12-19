@@ -1,7 +1,7 @@
 # Use static distroless base (includes CA certs and tzdata, no shell)
 FROM gcr.io/distroless/static-debian12
 
-LABEL org.opencontainers.image.source https://github.com/Marco98/mailcow-birthday-daemon
+LABEL org.opencontainers.image.source https://github.com/zege-at/mailcow-birthday-daemon
 
 ENV STATEFILE=/data/state.json
 VOLUME [ "/data" ]
