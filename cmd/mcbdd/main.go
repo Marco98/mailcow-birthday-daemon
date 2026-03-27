@@ -43,10 +43,18 @@ func main() {
 
 func run() error {
 	slog.Info("starting mcbdd", "version", version, "commit", commit, "date", date)
+	mailcowBase := os.Getenv("MAILCOW_BASE")
+	if mailcowBase == "" {
+		return fmt.Errorf("MAILCOW_BASE environment variable is not set")
+	}
+	mailcowAPIKey := os.Getenv("MAILCOW_APIKEY")
+	if mailcowAPIKey == "" {
+		return fmt.Errorf("MAILCOW_APIKEY environment variable is not set")
+	}
 	d := &Daemon{
 		userTokens:     make(map[string]string),
 		userTokensLock: &sync.RWMutex{},
-		baseURL:        os.Getenv("MAILCOW_BASE"),
+		baseURL:        mailcowBase,
 		stateFilepath:  os.Getenv("STATEFILE"),
 		httpClient: &http.Client{
 			Transport: &http.Transport{
@@ -59,8 +67,8 @@ func run() error {
 	}
 	d.mailcowClient = mailcow.New(
 		d.httpClient,
-		d.baseURL,
-		os.Getenv("MAILCOW_APIKEY"),
+		mailcowBase,
+		mailcowAPIKey,
 	)
 	if err := d.loadState(); err != nil {
 		return err
