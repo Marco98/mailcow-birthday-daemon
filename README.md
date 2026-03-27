@@ -11,7 +11,7 @@ Just add it to the `docker-compose.override.yml`:
 ```yaml
 services:
     birthdaydaemon:
-        image: ghcr.io/marco98/mailcow-birthday-daemon:0.1.0
+        image: ghcr.io/marco98/mailcow-birthday-daemon:0.1.1
         restart: always
         environment:
         - MAILCOW_BASE=https://mailcow.host
