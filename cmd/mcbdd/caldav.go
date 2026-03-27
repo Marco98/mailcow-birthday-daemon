@@ -147,7 +147,14 @@ func icalMatchesBev(ic *ical.Component, bev birthdayEvent) bool {
 	if ic.Props.Get(ical.PropDateTimeEnd) == nil || ic.Props.Get(ical.PropDateTimeEnd).Value != bev.DateTimeEnd {
 		return false
 	}
-	return true
+	hasAlarm := false
+	for _, child := range ic.Children {
+		if child.Name == ical.CompAlarm {
+			hasAlarm = true
+			break
+		}
+	}
+	return hasAlarm
 }
 
 func (bev birthdayEvent) generateICAL(calendar string) (string, *ical.Calendar) {
@@ -165,6 +172,14 @@ func (bev birthdayEvent) generateICAL(calendar string) (string, *ical.Calendar) 
 	end.Value = bev.DateTimeEnd
 	event.Props.Set(start)
 	event.Props.Set(end)
+	alarm := ical.NewComponent(ical.CompAlarm)
+	alarm.Props.SetText(ical.PropAction, "DISPLAY")
+	alarm.Props.SetText(ical.PropDescription, bev.Summary)
+	trigger := ical.NewProp(ical.PropTrigger)
+	trigger.Params.Set(ical.ParamValue, string(ical.ValueDuration))
+	trigger.Value = "PT0S"
+	alarm.Props.Set(trigger)
+	event.Children = append(event.Children, alarm)
 	cal.Children = append(cal.Children, event)
 	return fmt.Sprintf("%s/%s.ics", calendar, id), cal
 }
