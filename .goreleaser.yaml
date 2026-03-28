@@ -19,16 +19,16 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    formats: ["tar.gz"] # Korrigiert: 'format' ist deprecated
+    formats: ["tar.gz"]
     format_overrides:
       - goos: windows
-        formats: ["zip"] # Korrigiert: 'format' ist deprecated
+        formats: ["zip"]
 
 checksum:
   name_template: "checksums.txt"
 
 snapshot:
-  version_template: "{{ incpatch .Version }}-next" # Korrigiert: 'name_template' ist deprecated
+  version_template: "{{ incpatch .Version }}-next"
 
 release:
   prerelease: auto
@@ -49,7 +49,6 @@ upx:
 dockers:
   - dockerfile: Containerfile
     image_templates:
-      # Wir nutzen 'tolower', um den Owner-Namen kleinzuschreiben
       - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:{{ .Major }}"
       - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:{{ .Major }}.{{ .Minor }}"
       - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
