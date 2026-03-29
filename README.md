@@ -26,6 +26,16 @@ The API-Key can be obtained in the admin panel at Configuration > Access > Edit 
 
 As the Mailcow API does not seem to be complete and looks more like a early access, i would strongly advice against enabling "Skip IP check for API".
 
+## Development
+
+The application can be run locally using [go-task](https://taskfile.dev):
+
+```sh
+go-task run
+```
+
+`go-task` will automatically load a `.env` file from the project root, so you can configure environment variables (e.g. `MAILCOW_BASE`, `MAILCOW_APIKEY`) there without exporting them manually.
+
 ## How it works
 
 - Via the mailcow API a app password with access to carddav and caldav in generated for every user
