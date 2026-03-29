@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema.json
 version: 2
+
 builds:
   - main: ./cmd/mcbdd
     env:
@@ -9,39 +10,46 @@ builds:
       - windows
     goarch:
       - amd64
+
 archives:
-  - format: tar.gz
-    name_template: >-
+  - name_template: >-
       {{ .ProjectName }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
+    formats: ["tar.gz"]
     format_overrides:
       - goos: windows
-        format: zip
+        formats: ["zip"]
+
 checksum:
   name_template: "checksums.txt"
+
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  version_template: "{{ incpatch .Version }}-next"
+
 release:
   prerelease: auto
+
 changelog:
   sort: asc
   filters:
     exclude:
       - "^docs:"
       - "^test:"
+
 upx:
   - enabled: true
     goos: [linux]
     compress: best
     lzma: true
+
 dockers:
   - dockerfile: Containerfile
     image_templates:
-      - "ghcr.io/marco98/mailcow-birthday-daemon:{{ .Major }}"
-      - "ghcr.io/marco98/mailcow-birthday-daemon:{{ .Major }}.{{ .Minor }}"
-      - "ghcr.io/marco98/mailcow-birthday-daemon:{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
-      - "ghcr.io/marco98/mailcow-birthday-daemon:latest"
+      - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:{{ .Major }}"
+      - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
+      - "ghcr.io/{{ tolower .Env.GITHUB_REPOSITORY_OWNER }}/mailcow-birthday-daemon:latest"
