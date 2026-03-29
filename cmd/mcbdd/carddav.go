@@ -45,7 +45,9 @@ func (c *vlistFilterClient) Do(req *http.Request) (*http.Response, error) {
 // <D:response> elements whose <C:address-data> chardata contains BEGIN:VLIST.
 // It uses the XML decoder only to find byte offsets; it never re-encodes, so
 // namespace declarations and formatting are preserved exactly.
-// Non-multistatus bodies (no VLIST present) are returned unchanged.
+// Bodies without BEGIN:VLIST, or bodies that are not well-formed multistatus
+// XML (i.e. for which XML parsing fails), are returned unchanged; only
+// well-formed multistatus XML responses are filtered.
 func stripVListResponses(body []byte) ([]byte, error) {
 	if !bytes.Contains(body, []byte("BEGIN:VLIST")) {
 		return body, nil
